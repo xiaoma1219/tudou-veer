@@ -1,0 +1,121 @@
+#player
+{
+	position:relative;
+	width: 400px;
+	height:320px;
+}
+
+#video-object
+{
+	position:absolute;
+	width: 100%;
+	height:100%;
+	background:url(../images/info_pic.png) ;
+}
+
+#video-control
+{
+	position:absolute;
+	left :0px;
+	bottom:10px;
+	text-align:left;
+	height:80px;
+	z-index:999;
+	width:400px;
+	display:block;
+	background:url(../images/play_control_bg.png) no-repeat right top;
+	margin:0;
+	padding:0;
+}
+
+#play_control
+{
+	position:relative;
+	left:15px;
+	top:5px;
+	height:30px;
+}
+
+#play_status
+{
+	position:relative;
+	height:14px;
+	line-height:14px;
+	padding:0 10px;
+}
+
+#play_time
+{
+	position:relative;
+	font-size:12px;
+	float:left;
+	left:0px;
+	top:0px;
+	height:inherit;
+	width:45px;
+	color:white;
+	display:block;
+	text-align:right;
+	margin-right:10px;
+}
+
+#slider_bar{
+	position:relative;
+	float:left;
+	top:2px;
+	height: 10px;
+	border-width: 0px 4px;
+	-webkit-border-image: url(../images/slider-track.png) 0 4 0 4 repeat repeat;
+	width:310px;
+}
+
+#slider_bar_inner
+{
+	position:absolute;
+	left: -4px;
+	height: 10px;
+	border-width: 0px 4px;
+	-webkit-border-image: url(../images/slider-progress.png) 0 4 0 4 repeat repeat;
+	width:0px;
+}
+
+#slider_bar_inner_buffered
+{
+	position:absolute;
+	left: -4px;
+	height: 10px;
+	border-width: 0px 4px;
+	-webkit-border-image: url(../images/slider-progress-secondary.png) 0 4 0 4 repeat repeat;
+	width:0px;
+}
+#slider_bar_handle
+{
+	position:absolute;
+	background:url(../images/slider-handle.png) no-repeat top left;
+	margin: -14px -20px;
+	width:40px;
+	height:40px;
+	display:block;
+}
+
+#total_time{
+	position:absolute;
+	font-size:12px;
+	right:20px;
+	top:-12px;
+	height:inherit;
+	color:white;
+}
+
+#title
+{
+	position:absolute;
+	font-size:12px;
+	left:50px;
+	top:14px;
+	width:270px;
+	height:inherit;
+	color:white;
+	white-space:nowrap;
+	overflow:hidden;
+}
