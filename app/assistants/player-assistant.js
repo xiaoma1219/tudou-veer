@@ -78,9 +78,12 @@ PlayerAssistant.prototype.setup = function() {
 	this.toggle_control = this.toggle_control.bind(this);
 	this.play_control_tap = this.play_control_tap.bind(this);
 	this.updateTime = this.updateTime.bind(this);
+	this.ended = this.ended.bind(this);
 	
 	this.video_object.addEventListener('play', this.play);
 	this.video_object.addEventListener('pause', this.pause);
+	this.video_object.addEventListener('ended', this.ended);
+	
 	this.video_control.addEventListener(Mojo.Event.tap, this.video_slider.slider_show);
 	this.video_object.addEventListener(Mojo.Event.tap, this.toggle_control);
 	this.play_control.addEventListener(Mojo.Event.tap, this.play_control_tap);
@@ -101,18 +104,25 @@ PlayerAssistant.prototype.init_player = function(data){
 	this.video_object.src = data["clear_url"];
 	this.video_slider._max_value(data["totaltime"]);
 	this.duration = data["totaltime"]/1000;
+	this.item_id = data["itemid"];
 	this.controller.get("total_time").innerHTML = formatTime(this.duration);
 	this.controller.get("title").innerHTML = data["title"];
+	this.init_played_time();
 	this.video_object.play();
 	this.play_time_counter = window.setInterval(this.updateTime, 1000);	
 }
-PlayerAssistant.prototype.init_video_info = function(){
-	//this.video_slider.max_value = data["totaltime"];
-	/*
-	if(this.duration)
-	Mojo.Log.info("duration: " + this.video_object.duration);
-	this.controller.get("total_time").innerHTML = formatTime(this.video_object.duration);
-	*/
+PlayerAssistant.prototype.init_played_time = function(){
+	if(document.cookie.length < 0)
+		return false;
+	var i_start = document.cookie.indexOf("played_time_" + this.item_id + "=");
+	if(i_start == -1)
+		return false;
+	var i_end = document.cookie.indexOf(";",i_start);
+	if(i_end == -1)
+		i_end = document.cookie.length;
+	var time = document.cookie.substring(i_start + 14 + this.item_id.length, i_end);
+	this.play_timed_cookie = true;
+	this.video_object.currentTime = parseInt(time);
 }
 
 PlayerAssistant.prototype.start_drag_slider = function(){
@@ -136,11 +146,16 @@ PlayerAssistant.prototype.play_control_tap = function(){
 PlayerAssistant.prototype.play = function(){
 	this.play_control.src = "images/zt.png";
 	this.play_status = "play";
+	this.play_ended = false;
 }
 
 PlayerAssistant.prototype.pause = function(){
 	this.play_control.src = "images/ks.png";
 	this.play_status = "pause";
+}
+
+PlayerAssistant.prototype.ended = function(){
+	this.play_ended = true;
 }
 
 PlayerAssistant.prototype.updateTime = function(){
@@ -159,14 +174,14 @@ PlayerAssistant.prototype.toggle_control = function(option){
 	if(typeof(option) === "string"){
 		
 		if(this.hide_control_timeout){
-			window.clearTimeout(this.hide_control_timeout);
+			clearTimeout(this.hide_control_timeout);
 		}
 		if(option == "hide"){
 			this.video_control.style.display = "none";
 		}
 		else{
 			this.video_control.style.display = "";
-			this.hide_control_timeout = window.setTimeout(this.toggle_control.curry("hide").bind(this),5000);
+			this.hide_control_timeout = setTimeout(this.toggle_control.curry("hide").bind(this),5000);
 		}
 		return true;
 	}
@@ -185,18 +200,30 @@ PlayerAssistant.prototype.setFitMode =  function(option){
 }
 
 PlayerAssistant.prototype.activate = function(event) {
-	this.toggle_control("show");
 }	
 	
 PlayerAssistant.prototype.deactivate = function(event) {
-	this.video_object.pause();
 }
 
 PlayerAssistant.prototype.cleanup = function(event) {
 	if(this.play_time_counter)
-		window.clearInterval(this.play_time_counter);
+		clearInterval(this.play_time_counter);
+	
+	if(!this.play_ended && this.video_object.currentTime > 0){
+		document.cookie = "played_time_" + this.item_id + "=" + this.video_object.currentTime;
+	}
+	else{
+		if(this.play_timed_cookie){
+			var exp = new Date();
+			exp.setTime (exp.getTime() - 1);
+			document.cookie = "played_time_" + this.item_id + "=0; expires=" + exp.toGMTString();
+			}
+	}	
+	
 	this.video_object.removeEventListener('play', this.play);
 	this.video_object.removeEventListener('pause', this.pause);	
+	this.video_object.removeEventListener('ended', this.ended);
+	
 	this.video_control.removeEventListener(Mojo.Event.tap, this.video_slider.slider_show);
 	this.video_object.removeEventListener(Mojo.Event.tap, this.toggle_control);
 	this.play_control.removeEventListener(Mojo.Event.tap, this.play_control_tap);

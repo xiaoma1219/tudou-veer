@@ -56,24 +56,20 @@ window.API =
 	channel_index_url : main_url+'/columncate?',//lanmu fenlei
 	item_info_url : main_url+'/iteminfo?',//shipinxiangxi
 	related_url : main_url+'/related?',//get xiangguan tuijian 
-	play_video_stat_url : main_url+'/playvideostat?',//playvideostat
+	//play_video_stat_url : main_url+'/playvideostat?',//playvideostat
 
 
 	//seriaNum : 0 ,
-	seriaNum : "W1BD19B40PE" ,
+	seriaNum : Mojo.Environment.DeviceInfo.serialNumber ,
 	count : 0,
 	c_num : 0,
 	rec_page : 0,
 	channel_page : 0,
 	search_page :0,
 	pagesize : 18,
-	SESSIONID : "N7I5YAP7MM",
+	SESSIONID : "",
 
 	//API functions 
-
-	init_params : function(_param){
-		this.SESSIONID = _param.sessionid;
-	},
 	
 	signin_api : function(_param){
 		var url = this.signin_url + paramURL({
@@ -111,7 +107,7 @@ window.API =
 			page:this.search_page,
 			pagesize:45,
 			kw:_kw,
-			area:0
+			area:1
 		});
 		this.rec_page = 0 ;
 		this.channel_page = 0;
@@ -159,16 +155,6 @@ window.API =
 		var url = this.related_url + paramURL({
 			sessionid:this.SESSIONID,
 			itemid:_itemid,
-		});
-		request(url, _param);
-	},
-	update_play_times : function(_itemid){
-		var url = this.play_video_stat_url + paramURL({
-			sessionid:this.SESSIONID,
-			itemid:_itemid,
-			optype:2,
-			transcode:1,
-			playtime:0
 		});
 		request(url, _param);
 	}
