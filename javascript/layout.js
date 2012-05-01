@@ -225,10 +225,11 @@ var SliderBar = Class.create({
 		this.inner_buffered = document.getElementById(this.slider.id + "_inner_buffered");
 		this.handle = document.getElementById(this.slider.id + "_handle");
 		this.toggle_handle("hide");
-		this.handle_drag_start = this.handle_drag_start.bind(this);
-		this.handle_drag = this.handle_drag.bind(this);
+		this.handle_drag_start = this._handle_drag_start.bind(this);
+		this.handle_drag = this._handle_drag.bind(this);
 		this.handle_drag_stop = this._handle_drag_stop.bind(this);
 		this.slider_show =  this.toggle_handle.curry("show").bind(this);
+		
 		
 		Mojo.Event.listen(this.handle, "mousedown", this.handle_drag_start);
 		//Mojo.Event.listen(this.slider, Mojo.Event.tap,this.slider_show, false);
@@ -247,7 +248,7 @@ var SliderBar = Class.create({
 			this.inner_buffered.style.width = this.buffered_pos + "px";
 		}
 	},
-	handle_drag_start : function(event){
+	_handle_drag_start : function(event){
 		this.handle_x_start = event.clientX;
 		this.handle_pos_x = parseInt(this.handle.style.left.substr(0,this.handle.style.left.length-2));
 		this.toggle_handle("drag");
@@ -257,7 +258,7 @@ var SliderBar = Class.create({
 			this.drag_start();
 		}
 	},
-	handle_drag : function(event){
+	_handle_drag : function(event){
 		this.pos = this.handle_pos_x + event.clientX - this.handle_x_start;
 		if(this.pos > this.size)
 			this.pos = this.size;
