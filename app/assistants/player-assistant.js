@@ -79,7 +79,9 @@ PlayerAssistant.prototype.setup = function() {
 	this.play_control_tap = this.play_control_tap.bind(this);
 	this.updateTime = this.updateTime.bind(this);
 	this.ended = this.ended.bind(this);
+	this.loadedmetadata = this.loadedmetadata.bind(this);
 	
+	this.video_object.addEventListener('loadedmetadata', this.loadedmetadata);
 	this.video_object.addEventListener('play', this.play);
 	this.video_object.addEventListener('pause', this.pause);
 	this.video_object.addEventListener('ended', this.ended);
@@ -107,7 +109,6 @@ PlayerAssistant.prototype.init_player = function(data){
 	this.item_id = data["itemid"];
 	this.controller.get("total_time").innerHTML = formatTime(this.duration);
 	this.controller.get("title").innerHTML = data["title"];
-	this.init_played_time();
 	this.video_object.play();
 	this.play_time_counter = window.setInterval(this.updateTime, 1000);	
 }
@@ -120,9 +121,9 @@ PlayerAssistant.prototype.init_played_time = function(){
 	var i_end = document.cookie.indexOf(";",i_start);
 	if(i_end == -1)
 		i_end = document.cookie.length;
-	var time = document.cookie.substring(i_start + 14 + this.item_id.length, i_end);
+	var time = document.cookie.substring(i_start + 13 + this.item_id.length, i_end);
 	this.play_timed_cookie = true;
-	this.video_object.currentTime = parseInt(time);
+	this.video_object.currentTime = parseFloat(time);
 }
 
 PlayerAssistant.prototype.start_drag_slider = function(){
@@ -142,7 +143,9 @@ PlayerAssistant.prototype.play_control_tap = function(){
 		this.video_object.play();
 	}
 }
-
+PlayerAssistant.prototype.loadedmetadata = function(){
+	this.init_played_time();
+}
 PlayerAssistant.prototype.play = function(){
 	this.play_control.src = "images/zt.png";
 	this.play_status = "play";
@@ -223,6 +226,7 @@ PlayerAssistant.prototype.cleanup = function(event) {
 	this.video_object.removeEventListener('play', this.play);
 	this.video_object.removeEventListener('pause', this.pause);	
 	this.video_object.removeEventListener('ended', this.ended);
+	this.video_object.removeEventListener('loadedmetadata', this.loadedmetadata);
 	
 	this.video_control.removeEventListener(Mojo.Event.tap, this.video_slider.slider_show);
 	this.video_object.removeEventListener(Mojo.Event.tap, this.toggle_control);
