@@ -126,12 +126,13 @@ PlayerAssistant.prototype.init_player = function(data){
 	this.video_slider._max_value(data["totaltime"]);
 	this.duration = data["totaltime"]/1000;
 	this.item_id = data["itemid"];
-	this.controller.get("total_time").innerHTML = formatTime(this.duration);
+	var total_time = formatTime(this.duration);
+	this.controller.get("total_time").innerHTML = total_time;
 	this.controller.get("title").innerHTML = "正在播放: " + data["title"];
 		
 	//init_detail
 	this.detail_layout.innerHTML = "title: " + data["title"] + 
-							"<br />长度: " + data["totaltime"] + 
+							"<br />长度: " + total_time+ 
 							"<br />描述: " + data["description"] + 
 							"<br />博客: " + data["podcast"] + 
 							"<br />标签: " + data["tags"];
@@ -140,6 +141,7 @@ PlayerAssistant.prototype.init_player = function(data){
 	this.play_time_counter = window.setInterval(this.updateTime, 1000);	
 }
 PlayerAssistant.prototype.init_played_time = function(){
+	this.controller.get("time_container").style.display = "block";
 	if(document.cookie.length < 0)
 		return false;
 	var i_start = document.cookie.indexOf("played_time_" + this.item_id + "=");
@@ -151,7 +153,7 @@ PlayerAssistant.prototype.init_played_time = function(){
 	var time = document.cookie.substring(i_start + 13 + this.item_id.length, i_end);
 	this.play_timed_cookie = true;
 	this.video_object.currentTime = parseFloat(time);
-	this.controller.get("time_container").style.display = "block";
+	
 }
 
 PlayerAssistant.prototype.start_drag_slider = function(){
