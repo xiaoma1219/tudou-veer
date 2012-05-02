@@ -27,16 +27,24 @@ MainAssistant.prototype.setup = function() {
 	this.search_btn = this.controller.get("search_btn");
 	this.channel_list_control_btn = this.controller.get("channel_list_control_btn");
 	this.video_list_scroll = this.controller.get("video_list_scroll");
+	this.channel_list_container = this.controller.get("channel_list_container");
 	
 	this.insert_video_list = this.insert_video_list.bind(this);
 	this.nev_btn_tap = this.nev_btn_tap.curry(this);
 	this.channel_list_control_btn_tap = this.channel_list_control_btn_tap.bind(this);
 	this.search_tap = this.search_tap.bind(this);
 	this.video_list_scroll_update = this.video_list_scroll_update.bind(this);
+	
+
+	this.mouseup_channel_list = this.mouseup_channel_list.bind(this);
+	this.mousedown_channel_list = this.mousedown_channel_list.bind(this);
+	
 	Mojo.Event.listen(this.search_btn, Mojo.Event.tap ,this.search_tap);
 	Mojo.Event.listen(this.channel_list_control_btn, Mojo.Event.tap, this.channel_list_control_btn_tap);
 	Mojo.Event.listen(this.video_list_scroll, Mojo.Event.scrollStarting, this.video_list_scroll_update);
 	
+	Mojo.Event.listen(this.channel_list_container, "mousedown", this.mousedown_channel_list, true);
+	Mojo.Event.listen(this.channel_list_container, "mouseup", this.mouseup_channel_list, true);
 	this.init_nev();
 	
 	API.signin_api({
@@ -109,6 +117,29 @@ MainAssistant.prototype.video_list_scroll_moved = function(stopping){
 		}
 	}
 	//getBoundaries
+}
+MainAssistant.prototype.mousedown_channel_list = function(){
+	if(this.channel_list_control_btn_hide){
+		window.clearInterval(this.channel_list_control_btn_hide);
+		this.channel_list_control_btn.style.opacity = 0;
+	}
+	if(this.channel_list_hide){
+		window.clearTimeout(this.channel_list_hide);
+	}
+	this.toggle_channel_list("show");
+}
+
+MainAssistant.prototype.mouseup_channel_list = function(){
+	if(this.channel_list_control_btn_hide){
+		window.clearInterval(this.channel_list_control_btn_hide);
+		this.channel_list_control_btn.style.opacity = 0;
+	}
+	if(this.channel_list_hide){
+		window.clearTimeout(this.channel_list_hide);
+	}
+	this.toggle_channel_list("show");
+	this.channel_list_hide = window.setTimeout(
+				this.toggle_channel_list.curry("hide").bind(this), 5000);
 }
 
 MainAssistant.prototype.toggle_channel_list = function(options){
@@ -261,6 +292,9 @@ MainAssistant.prototype.releaseEvent = function(){
 	Mojo.Event.stopListening(this.search_btn, Mojo.Event.tap ,this.search_tap);
 	Mojo.Event.stopListening(this.channel_list_control_btn, Mojo.Event.tap, this.channel_list_control_btn_tap);
 	Mojo.Event.stopListening(this.video_list_scroll, Mojo.Event.scrollStarting, this.video_list_scroll_update);
+	
+	Mojo.Event.stopListening(this.channel_list_container, "mousedown", this.mousedown_channel_list, true);
+	Mojo.Event.stopListening(this.channel_list_container, "mouseup", this.mouseup_channel_list, true);
 }
 
 

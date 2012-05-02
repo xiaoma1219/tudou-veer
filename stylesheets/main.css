@@ -76,6 +76,7 @@
 	line-height:11px;
 	font-size:11px;
 	color:white;
+	font-weight:bold;
 }
 
 .video_list .list_item .info .total_time
@@ -84,11 +85,13 @@
 	font-size:11px;
 	color:white;
 	text-indent:3px;
+	padding-right:6px;
 	float:left;
-	top:-24px;
+	top:-23px;
 	left:0px;
 	padding:2px 3px;
 	background:rgba(128,128,128,0.5);
+	font-weight:bold;
 }
 
 .video_list .list_item .info .paly_times
@@ -102,6 +105,7 @@
 	text-indent:13px;
 	float:left;
 	background:url(../images/xb.png) no-repeat;
+	font-weight:bold;
 	
 }
 
@@ -132,7 +136,7 @@
 	width:inherit;
 	height:inherit;
 	padding-right:6px;
-	background:url(../images/channelbg.png)  no-repeat top right;
+	background:url(../images/channelbg.png) repeat-y top right;
 	z-index:999;
 }
 
